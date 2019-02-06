@@ -4,7 +4,11 @@ class LinkedList {
     this.tail = head;
   }
 
-  addToTail(node) {
+  addToTail(val) {
+    let node = new LinkedListNode(val);
+    if (this.head.next === null) {
+      this.head.next = node;
+    }
     this.tail.next = node;
     this.tail = node;
   }
@@ -34,8 +38,13 @@ class LinkedListNode {
 }
 
 const headNode = new LinkedListNode(7);
+console.log(headNode)
 
 const myLinkedList = new LinkedList(headNode);
-myLinkedList.addToTail
+myLinkedList.addToTail(4)
+myLinkedList.addToTail(8);
+myLinkedList.addToTail(10);
+myLinkedList.removeHead();
+
 
 console.log(myLinkedList);
