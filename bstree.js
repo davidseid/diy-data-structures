@@ -61,7 +61,45 @@ class BSTree {
   }
 
   remove(data) {
+    this.root = this.removeNode(this.root, data);
+  }
 
+  removeNode(node, data) {
+
+    if (node === null) return null;
+
+    if (data < node.data) {
+      node.left = this.removeNode(node.left, data);
+      return node;
+    }
+
+    if (data > node.data) {
+      node.right = this.removeNode(node.right, data);
+      return node;
+    }
+
+    // no children
+    if (!node.left && !node.right) {
+      node = null;
+      return node;
+    }
+    
+    // one child
+    if (!node.right) {
+      node = node.left;
+      return node;
+    }
+
+    if (!node.left) {
+      node = node.right;
+      return node;
+    }
+
+    // two children
+    let minNode = this.findMinNode(node.right);
+    node.data = minNode.data;
+    node.right = this.removeNode(node.right, minNode.data);
+    return node;
   }
 
   getRootNode() {
@@ -91,8 +129,7 @@ class BSTree {
 /*
         5
       2   6
-    1  4    7
-
+    1  4    7 
 */
 
 const myTree = new BSTree();
@@ -102,7 +139,7 @@ myTree.insert(4);
 myTree.insert(6);
 myTree.insert(1);
 myTree.insert(7);
-// myTree.remove(5);
+myTree.remove(5);
 console.log(myTree.root);
 
 
