@@ -23,12 +23,28 @@ class AVLTree {
     return node.height;
   }
 
-  rightRotate(node) {
-    
+  rotateRight(node) {
+    let left = node.left;
+    let child = left.right;
+
+    left.right = node;
+    node.left = child;
+
+    this.updateHeight(node);
+    this.updateHeight(left);
+    return left;
   }
 
-  leftRotate(node) {
+  rotateLeft(node) {
+    let right = node.right;
+    let child = right.left;
 
+    right.left = node;
+    node.right = child;
+
+    this.updateHeight(node);
+    this.updateHeight(right);
+    return right;
   }
 
   getBalance(node) {
@@ -40,41 +56,28 @@ class AVLTree {
 
   rebalance(node) {
     let balance = this.getBalance(node);
-    console.log(`Balance of node ${node.data} is ${balance}`);
+    if (Math.abs(balance) <= 1) return node;
 
-    if (Math.abs(balance) <= 1) return;
-
-
-    // // left left
+    // left left
     if (balance > 1 && this.getBalance(node.left) > 0) {
-      console.log('left left');
-
+      return this.rotateRight(node);
     }
 
-    // // left right
+    // left right
     if (balance > 1 && this.getBalance(node.left) < 0) {
-      console.log('left right');
+      node.left = this.rotateLeft(node.left);
+      return this.rotateRight(node);
     }
     
-    // // right right
+    // right right
     if (balance < -1 && this.getBalance(node.right) < 0) {
-      console.log('right right');
-      // rotate node left
-      let right = node.right;
-      let child = right.left;
-
-      right.left = node;
-      node.right = child;
-
-      this.updateHeight(node);
-      this.updateHeight(right);
-      this.root = right;
-      return;
+      return this.rotateLeft(node);
     }
 
-        // // right left
+    // right left
     if (balance < -1 && this.getBalance(node.right) > 0) {
-      console.log('left left')
+      node.right = this.rotateRight(node.right);
+      return this.rotateLeft(node);
     }
   }
 
@@ -101,12 +104,11 @@ class AVLTree {
     if (this.root === null) {
       this.root = newNode;
     } else {
-      this.insertNode(this.root, newNode);
+      this.root = this.insertNode(this.root, newNode);
     }
   }
 
   insertNode(node, newNode) {
-
     if (newNode.data < node.data) {
       if (!node.left) {
         node.left = newNode;
@@ -114,7 +116,6 @@ class AVLTree {
         this.insertNode(node.left, newNode);
       }
     }
-
     if (newNode.data > node.data) {
       if (!node.right) {
         node.right = newNode;
@@ -122,9 +123,8 @@ class AVLTree {
         this.insertNode(node.right, newNode);
       }
     }
-
     this.updateHeight(node);   
-    this.rebalance(node);
+    return this.rebalance(node);
   }
 
   remove(data) {
@@ -206,8 +206,8 @@ class AVLTree {
 const myTree = new AVLTree();
 myTree.insert(5);
 myTree.insert(4);
-myTree.insert(7);
-myTree.insert(9);
-myTree.insert(6);
 myTree.insert(8);
+myTree.insert(9);
+myTree.insert(7);
+myTree.insert(6);
 console.log(myTree.root);
